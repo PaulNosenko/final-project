@@ -1,4 +1,6 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import style from './NavBar.module.scss';
 
 const NavBar = () => {
     return (
@@ -7,7 +9,7 @@ const NavBar = () => {
                 <Navbar.Brand href="/">WaiterApp</Navbar.Brand>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav>
-                        <Nav.Link href="/">Home</Nav.Link>
+                        <NavLink to="/" className={style.link}>Home</NavLink>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
