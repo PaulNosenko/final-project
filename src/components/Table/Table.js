@@ -1,8 +1,113 @@
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { getTableById } from "../../redux/tablesReducers";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import style from './Table.module.scss';
+import { useEffect, useRef, useState } from "react";
+import TableStatus from "../../enums/TableStatus";
+
 const Table = () => {
-    //get current table's information from store - use selector
+    const { tableId } = useParams();
+    const currentTable = useSelector((store) => getTableById(store, tableId));
+    const [status, setStatus] = useState(currentTable.status);
+    const [peopleAmount, setPeopleAmount] = useState(currentTable.peopleAmount);
+    const [maxPeopleAmount, setMaxPeopleAmount] = useState(currentTable.maxPeopleAmount);
+    const [bill, setBill] = useState(currentTable.bill);
+
+    useEffect(() => {
+        if ([TableStatus.Cleaning, TableStatus.Free].includes(status)) {
+            setPeopleAmount(0);
+        }
+        if (peopleAmount && maxPeopleAmount && +peopleAmount > +maxPeopleAmount) {
+            setPeopleAmount(maxPeopleAmount);
+        }
+    }, [status, maxPeopleAmount]);
+
+    const updateTable = (e) => {
+        e.preventDefault();
+    
+        const payload = {
+            status,
+            peopleAmount,
+            maxPeopleAmount,
+            bill
+        }
+
+        console.log('payload', payload);
+    }
+
+    const handleStatusChange = (event) => {
+        const newStatus = event.target.value;
+        if (status === TableStatus.Busy && newStatus !== TableStatus.Busy) {
+            setBill(0);
+        }
+        setStatus(newStatus);
+    };
+
+    const handlePeopleAmountChange = (event) => {
+        const newPeopleAmount = event.target.value;
+
+        if (+newPeopleAmount > +maxPeopleAmount) {
+            setPeopleAmount(maxPeopleAmount);
+        } else if (+newPeopleAmount < 0) {
+            setPeopleAmount(0);
+        } else {
+            setPeopleAmount(newPeopleAmount);
+        }
+    };
+
+    const handleMaxPeopleAmountChange = (event) => {
+        const newMaxPeopleAmount = event.target.value;
+
+        if (newMaxPeopleAmount < 0) {
+            setMaxPeopleAmount(0);
+        } else if (+newMaxPeopleAmount > 10) {
+            setMaxPeopleAmount(10);
+        } else {
+            setMaxPeopleAmount(newMaxPeopleAmount);
+        }
+    };
+
+    const handleBillChange = (event) => {
+        setBill(event.target.value);
+    };
 
     return (
-        <div>Table</div>
+        <div>
+            <h2>Table {currentTable.id}</h2>
+            <Form onSubmit={updateTable}>
+                <Row className="mb-3">
+                    <Form.Group as={Col} md="4" className={style.formGroup}>
+                        <Form.Label><strong>Status:</strong></Form.Label>
+                        <Form.Select value={status} onChange={handleStatusChange}>
+                            {Object.values(TableStatus).map(s => <option key={s}>{s}</option>)}
+                        </Form.Select>
+                    </Form.Group>
+                </Row>
+
+                <Row className="mb-3">
+                    <Form.Group as={Col} md="3" className={style.formGroup}>
+                        <Form.Label><strong>People:</strong></Form.Label>
+                        <Form.Control type="text" value={peopleAmount} onChange={handlePeopleAmountChange} /> /
+                        <Form.Control type="text" value={maxPeopleAmount} onChange={handleMaxPeopleAmountChange} />
+                    </Form.Group>
+                </Row>
+
+                {
+                    status === TableStatus.Busy && <Row className="mb-3">
+                        <Form.Group as={Col} md="3" className={style.formGroup}>
+                            <Form.Label><strong>Bill:</strong></Form.Label>
+                            $ <Form.Control type="text" value={bill} onChange={handleBillChange} />
+                        </Form.Group>
+                    </Row>
+                }
+
+
+                <Button variant="primary" type="submit">
+                    Update
+                </Button>
+            </Form>
+        </div>
     );
 }
 

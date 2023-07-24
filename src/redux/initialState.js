@@ -1,5 +1,5 @@
-{
-    "tables": [
+const initialState = {
+    tables: [
         {
             "id": "1",
             "status": "Busy",
@@ -37,3 +37,5 @@
         }
     ]
 }
+
+export default initialState;
