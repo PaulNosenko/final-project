@@ -4,20 +4,24 @@ const UPDATE_TABLE = createActionName('UPDATE_TABLE');
 const UPDATE_TABLES = createActionName('UPDATE_TABLES');
 
 //selectors
-export const getTableById = ({tables}, tableId) => tables.find(table => table.id === tableId);
-export const getAllTables = ({tables}) => tables;
+export const getTableById = ({ tables }, tableId) => tables.find(table => table.id === tableId);
+export const getAllTables = ({ tables }) => tables;
 
 //actions
-//TODO
+export const updateTables = (payload) => ({ type: UPDATE_TABLES, payload })
+export const fetchTables = () => {
+    return (dispatch) => {
+        fetch('http://localhost:3131/tables')
+            .then(res => res.json())
+            .then(tables => dispatch(updateTables(tables)));
+    }
+}
 
 //reducer
 const tablesReducer = (statePart = [], action) => {
     switch (action.type) {
-        case UPDATE_TABLE: {
-            return statePart;
-        }
         case UPDATE_TABLES: {
-            return statePart;
+            return [...action.payload];
         }
         default: {
             return statePart;
