@@ -5,6 +5,8 @@ import { getAllTables } from "../../redux/tablesReducers";
 const Home = () => {
     const allTables = useSelector(getAllTables);
 
+    if (!allTables.length) return <h2>Loading...</h2>;
+
     return (
         <div>
             <h2>All tables</h2>

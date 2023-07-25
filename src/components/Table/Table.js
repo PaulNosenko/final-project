@@ -1,39 +1,49 @@
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getTableById } from "../../redux/tablesReducers";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { getTableById, updateTableRequest } from "../../redux/tablesReducers";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import style from './Table.module.scss';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TableStatus from "../../enums/TableStatus";
 
 const Table = () => {
     const { tableId } = useParams();
     const currentTable = useSelector((store) => getTableById(store, tableId));
-    const [status, setStatus] = useState(currentTable.status);
-    const [peopleAmount, setPeopleAmount] = useState(currentTable.peopleAmount);
-    const [maxPeopleAmount, setMaxPeopleAmount] = useState(currentTable.maxPeopleAmount);
-    const [bill, setBill] = useState(currentTable.bill);
+    const [status, setStatus] = useState(currentTable?.status);
+    const [peopleAmount, setPeopleAmount] = useState(currentTable?.peopleAmount);
+    const [maxPeopleAmount, setMaxPeopleAmount] = useState(currentTable?.maxPeopleAmount);
+    const [bill, setBill] = useState(currentTable?.bill);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if ([TableStatus.Cleaning, TableStatus.Free].includes(status)) {
             setPeopleAmount(0);
         }
+    }, [status]);
+
+    useEffect(() => {
         if (peopleAmount && maxPeopleAmount && +peopleAmount > +maxPeopleAmount) {
             setPeopleAmount(maxPeopleAmount);
         }
-    }, [status, maxPeopleAmount]);
+    }, [maxPeopleAmount]);
 
     const updateTable = (e) => {
         e.preventDefault();
-    
+
         const payload = {
+            id: tableId,
             status,
             peopleAmount,
             maxPeopleAmount,
             bill
         }
 
-        console.log('payload', payload);
+        dispatch(updateTableRequest(payload, navigateToHome));
+    }
+
+    const navigateToHome = () => {
+        navigate("/");
     }
 
     const handleStatusChange = (event) => {
@@ -72,6 +82,8 @@ const Table = () => {
         setBill(event.target.value);
     };
 
+    if (!currentTable) return <Navigate to="/" />
+
     return (
         <div>
             <h2>Table {currentTable.id}</h2>
@@ -95,7 +107,7 @@ const Table = () => {
 
                 {
                     status === TableStatus.Busy && <Row className="mb-3">
-                        <Form.Group as={Col} md="3" className={style.formGroup}>
+                        <Form.Group as={Col} md="2" className={style.formGroup}>
                             <Form.Label><strong>Bill:</strong></Form.Label>
                             $ <Form.Control type="text" value={bill} onChange={handleBillChange} />
                         </Form.Group>

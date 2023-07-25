@@ -6,13 +6,12 @@ import Table from './components/Table/Table';
 import { useDispatch } from 'react-redux';
 import { fetchTables } from './redux/tablesReducers';
 import { useEffect } from 'react';
+import Footer from './components/Footer/Footer';
 
 function App() {
   const dispatch = useDispatch();
   
-  useEffect(() => {
-    dispatch(fetchTables())
-  });
+  useEffect(() => dispatch(fetchTables()), [dispatch]);
 
   return (
     <main>
@@ -23,6 +22,7 @@ function App() {
           <Route path="/tables/:tableId" element={<Table />} />
         </Routes>
       </Container>
+      <Footer></Footer>
     </main>
   );
 }
