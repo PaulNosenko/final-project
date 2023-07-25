@@ -89,7 +89,7 @@ const Table = () => {
             <h2>Table {currentTable.id}</h2>
             <Form onSubmit={updateTable}>
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" className={style.formGroup}>
+                    <Form.Group as={Col} md="3" className={style.formGroup}>
                         <Form.Label><strong>Status:</strong></Form.Label>
                         <Form.Select value={status} onChange={handleStatusChange}>
                             {Object.values(TableStatus).map(s => <option key={s}>{s}</option>)}
@@ -98,7 +98,7 @@ const Table = () => {
                 </Row>
 
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="3" className={style.formGroup}>
+                    <Form.Group as={Col} md="4" className={style.formGroup}>
                         <Form.Label><strong>People:</strong></Form.Label>
                         <Form.Control type="text" value={peopleAmount} onChange={handlePeopleAmountChange} /> /
                         <Form.Control type="text" value={maxPeopleAmount} onChange={handleMaxPeopleAmountChange} />
@@ -107,7 +107,7 @@ const Table = () => {
 
                 {
                     status === TableStatus.Busy && <Row className="mb-3">
-                        <Form.Group as={Col} md="2" className={style.formGroup}>
+                        <Form.Group as={Col} md="3" className={style.formGroup}>
                             <Form.Label><strong>Bill:</strong></Form.Label>
                             $ <Form.Control type="text" value={bill} onChange={handleBillChange} />
                         </Form.Group>
