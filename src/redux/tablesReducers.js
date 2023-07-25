@@ -38,7 +38,7 @@ export const updateTableRequest = (payload, sideEffectFn) => {
 const tablesReducer = (statePart = [], action) => {
     switch (action.type) {
         case UPDATE_TABLE: {
-            return [...statePart, action.payload];
+            return [...statePart.filter(t => t.id !== action.payload.id), action.payload];
         }
         case UPDATE_TABLES: {
             return [...action.payload];
