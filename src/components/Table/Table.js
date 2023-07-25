@@ -17,12 +17,6 @@ const Table = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if ([TableStatus.Cleaning, TableStatus.Free].includes(status)) {
-            setPeopleAmount(0);
-        }
-    }, [status]);
-
-    useEffect(() => {
         if (peopleAmount && maxPeopleAmount && +peopleAmount > +maxPeopleAmount) {
             setPeopleAmount(maxPeopleAmount);
         }
@@ -50,6 +44,9 @@ const Table = () => {
         const newStatus = event.target.value;
         if (status === TableStatus.Busy && newStatus !== TableStatus.Busy) {
             setBill(0);
+        }
+        if (isCleaningOrFree(newStatus)) {
+            setPeopleAmount(0);
         }
         setStatus(newStatus);
     };
@@ -82,6 +79,10 @@ const Table = () => {
         setBill(event.target.value);
     };
 
+    const isCleaningOrFree = (status) => {
+        return [TableStatus.Cleaning, TableStatus.Free].includes(status);
+    }
+
     if (!currentTable) return <Navigate to="/" />
 
     return (
@@ -100,7 +101,7 @@ const Table = () => {
                 <Row className="mb-3">
                     <Form.Group as={Col} md="4" className={style.formGroup}>
                         <Form.Label><strong>People:</strong></Form.Label>
-                        <Form.Control type="text" value={peopleAmount} onChange={handlePeopleAmountChange} /> /
+                        <Form.Control type="text" disabled={isCleaningOrFree(status)} value={peopleAmount} onChange={handlePeopleAmountChange} /> /
                         <Form.Control type="text" value={maxPeopleAmount} onChange={handleMaxPeopleAmountChange} />
                     </Form.Group>
                 </Row>
