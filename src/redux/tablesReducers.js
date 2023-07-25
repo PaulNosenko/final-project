@@ -7,7 +7,7 @@ const UPDATE_TABLES = createActionName('UPDATE_TABLES');
 
 //selectors
 export const getTableById = ({ tables }, tableId) => tables.find(table => table.id === tableId);
-export const getAllTables = ({ tables }) => tables;
+export const getAllTables = ({ tables }) => tables.sort((a, b) => a.id - b.id);
 
 //actions
 export const updateTables = (payload) => ({ type: UPDATE_TABLES, payload })
