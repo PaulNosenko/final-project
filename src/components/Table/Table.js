@@ -33,10 +33,10 @@ const Table = () => {
 
         const payload = {
             id: tableId,
-            status,
-            peopleAmount,
-            maxPeopleAmount,
-            bill
+            status: status.toString(),
+            peopleAmount: peopleAmount.toString(),
+            maxPeopleAmount: maxPeopleAmount.toString(),
+            bill: bill.toString()
         }
 
         dispatch(updateTableRequest(payload, navigateToHome));
